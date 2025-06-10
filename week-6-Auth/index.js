@@ -1,11 +1,26 @@
 const express = require('express');
 const app = express();
+app.use(express.json());
 
-app.get('/signup', (req, res) => {
-    
+
+const users = [];
+
+app.post('/signup', (req, res) => {
+   const username = req.body.username
+   const password = req.body.password 
+
+   users.push({
+    username, 
+    password
+   });
+
+   res.json({
+    message: "Signup is Done"
+   });
+
 })
 
-app.get('/signin', (req, res) => {
+app.post('/signin', (req, res) => {
 
 })
 
