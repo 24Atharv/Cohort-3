@@ -6,17 +6,19 @@ const JWT_SECRET = 'randomatharvzzxatg'
 
 const users = [];
 
+
+
 app.post('/signup', (req, res) => {
    const username = req.body.username
-   const password = req.body.password 
+   const password = req.body.password
 
    users.push({
-    username, 
-    password
+      username,
+      password
    });
 
    res.json({
-    message: "Signup is Done"
+      message: "Signup is Done"
    });
 
    console.log(users);
@@ -28,21 +30,27 @@ app.post('/signin', (req, res) => {
    const password = req.body.password
 
    let foundUser = null;
-   for(let i=0; i < users.length; i++) {
-      if(users[i].username === username && users[i].password === password) {
+   for (let i = 0; i < users.length; i++) {
+      if (users[i].username === username && users[i].password === password) {
          foundUser = users[i];
-      } 
+      }
    }
-      if(!foundUser) {
-         res.json({
-            message: "Invalid"
-         });
+   if (!foundUser) {
+      const token = jwt.sign({
+         username: username
+      }, JWT_SECRET);
+
+      res.json({
+         token: token
+      })
+
    } else {
       res.json({
-         message: "Signin succesfull"
+         message: "Invalid"
       })
    }
    console.log(users);
-})
+});
 
 app.listen(4000, () => console.log("Server Started"));
+
