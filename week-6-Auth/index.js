@@ -1,11 +1,12 @@
 const express = require('express');
 const app = express();
+
 app.use(express.json());
+
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'randomatharvzzxatg'
 
 const users = [];
-
 
 
 app.post('/signup', (req, res) => {
@@ -25,6 +26,7 @@ app.post('/signup', (req, res) => {
 
 })
 
+
 app.post('/signin', (req, res) => {
    const username = req.body.username
    const password = req.body.password
@@ -35,7 +37,7 @@ app.post('/signin', (req, res) => {
          foundUser = users[i];
       }
    }
-   if (!foundUser) {
+   if (foundUser) {
       const token = jwt.sign({
          username: username
       }, JWT_SECRET);
@@ -52,14 +54,23 @@ app.post('/signin', (req, res) => {
    console.log(users);
 });
 
+
+
 app.get('/me', (req, res) => {
    const token = req.headers.token
-   const decodedToekenInfo = jwt.verify(token, JWT_SECRET);
-   const username = decodedToekenInfo.username
 
-   
+   const decodedToekenInfo = jwt.verify(token, JWT_SECRET);
+
+   if (decodedToekenInfo.username) {
+      res.json({
+         username: decodedToekenInfo.username
+      })
+   }
+   else {
+      res.status(403).json({
+         message: "Invalid"
+      })
+   }
 })
 
-
 app.listen(4000, () => console.log("Server Started"));
-
