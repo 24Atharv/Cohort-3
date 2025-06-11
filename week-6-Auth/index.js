@@ -52,5 +52,14 @@ app.post('/signin', (req, res) => {
    console.log(users);
 });
 
+app.get('/me', (req, res) => {
+   const token = req.headers.token
+   const decodedToekenInfo = jwt.verify(token, JWT_SECRET);
+   const username = decodedToekenInfo.username
+
+   
+})
+
+
 app.listen(4000, () => console.log("Server Started"));
 
