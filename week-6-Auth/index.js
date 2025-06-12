@@ -2,12 +2,17 @@ const express = require('express');
 const app = express();
 
 app.use(express.json());
+app.use(express.static('public'));
+
 
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'randomatharvzzxatg'
 
 const users = [];
 
+app.get('/', (req, res) => {
+   res.sendFile(__dirname + '/public/index.html')
+});
 
 app.post('/signup', (req, res) => {
    const username = req.body.username
@@ -56,21 +61,41 @@ app.post('/signin', (req, res) => {
 
 
 
+// app.get('/me', (req, res) => {
+//    const token = req.headers.token
+
+//    const decodedToekenInfo = jwt.verify(token, JWT_SECRET);
+
+//    if (decodedToekenInfo.username) {
+//       res.json({
+//          username: decodedToekenInfo.username
+//       })
+//    }
+//    else {
+//       res.status(403).json({
+//          message: "Invalid"
+//       })
+//    }
+// })
+
+
 app.get('/me', (req, res) => {
-   const token = req.headers.token
+   const authHeader = req.headers.authorization;
 
-   const decodedToekenInfo = jwt.verify(token, JWT_SECRET);
+   if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Token missing or malformed" });
+   }
 
-   if (decodedToekenInfo.username) {
-      res.json({
-         username: decodedToekenInfo.username
-      })
+   const token = authHeader.split(" ")[1];
+
+   try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      res.json({ username: decoded.username });
+   } catch (err) {
+      res.status(403).json({ message: "Invalid token" });
    }
-   else {
-      res.status(403).json({
-         message: "Invalid"
-      })
-   }
-})
+});
+
+
 
 app.listen(4000, () => console.log("Server Started"));
