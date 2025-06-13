@@ -4,88 +4,76 @@ app.use(express.json());
 const { UserModel, TodoModel } = require('./db');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'randomencodergen'
+const bcrypt = require('bcrypt');
+const { z } = require('zod');
+
+const JWT_SECRET = 'randomencodergen';
 
 mongoose.connect('mongodb+srv://atharvwork:1224@cluster0.xsevoja.mongodb.net/atharvdatabase');
 
-app.post('/signup', async (req, res) => {
-    const email = req.body.email
-    const password = req.body.password
-    const name = req.body.name
-
-    const user = await UserModel.create({
-        email: email,
-        password: password,
-        name: name
-    });
-
-    res.json({
-        message: "Signup Completed"
-    })
-
-    console.log(user);
-
-})
-
-app.post('/signin', async (req, res) => {
-    const email = req.body.email
-    const password = req.body.password
-
-    const foundUser = await UserModel.findOne({
-        email: email,
-        password: password
-    })
-
-    console.log(foundUser);
-
-    if (foundUser) {
-        const token = jwt.sign({
-            id: foundUser._id
-        }, JWT_SECRET);
-        res.json({
-            token: token
-        })
-
-    }
-    else {
-        res.json({
-            message: "Invalid"
-        })
-    }
-})
-
-app.post('/todos', async (req, res) => {
-    const title = req.body.title
-    const done = req.body.done
-    const userId = req.body._id
-
-    const todo = await TodoModel.create({
-        title: title,
-        done: done,
-        userId: userId
-    });
-
-    res.json({
-        message: "todo make"
-    })
-})
-
-app.get('/todo', (req, res) => {
-    const token = req.headers.token
-
-    const decodeToken = jwt.verify(token, JWT_SECRET);
-    
-    const id = decodeToken.id.toString();
-
-    res.json({
-        id
-    })
-});
-
+// Middleware to authenticate JWT
 function auth(req, res, next) {
-    
+    const token = req.headers.token;
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.userId = decoded.id;
+    next();
 }
 
+// Signup Route
+app.post('/signup', async (req, res) => {
+    const requireBody = z.object({
+        email: z.string(),
+        password: z.string(),
+        name: z.string()
+    });
 
-app.listen(3000);
+    const result = requireBody.safeParse(req.body);
+    if (!result.success) {
+        return res.status(400).json({ message: "Incorrect Format" });
+    }
 
+    const { email, password, name } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 5);
+    const user = await UserModel.create({
+        email,
+        password: hashedPassword,
+        name
+    });
+
+    res.json({ message: "Signup Completed" });
+});
+
+// Signin Route
+app.post('/signin', async (req, res) => {
+    const { email, password } = req.body;
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+        return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign({ id: user._id }, JWT_SECRET);
+    res.json({ token });
+});
+
+// Create Todo
+app.post('/todos', auth, async (req, res) => {
+    const { title, done } = req.body;
+    await TodoModel.create({ title, done, userId: req.userId });
+    res.json({ message: "Todo Created" });
+});
+
+// Get current user's ID from token
+app.get('/todo', auth, (req, res) => {
+    res.json({ id: req.userId });
+});
+
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
