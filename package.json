@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/24Atharv/Cohort-3/issues"
   },
-  "homepage": "https://github.com/24Atharv/Cohort-3#readme"
+  "homepage": "https://github.com/24Atharv/Cohort-3#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "mongoose": "^8.15.1",
+    "zod": "^3.25.63"
+  }
 }
