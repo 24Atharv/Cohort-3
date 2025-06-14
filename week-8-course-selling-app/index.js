@@ -3,6 +3,7 @@ const { mongoose } = require('mongoose');
 const app = express();
 app.use(express.json());
 const { userRoute } = require('./routes/user');
+const { courseRoute } = require('./routes/course');
 
 function main() {
     mongoose.connect('mongodb+srv://atharvwork:1224@cluster0.xsevoja.mongodb.net/coursera');
