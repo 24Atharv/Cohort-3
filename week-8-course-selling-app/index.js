@@ -1,15 +1,16 @@
+require('dotenv').config();
 const express = require('express');
 const { mongoose } = require('mongoose');
 const app = express();
 app.use(express.json());
-const { userRoute } = require('./routes/user');
-const { courseRoute } = require('./routes/course');
-const { adminRoute } = require('./routes/admin');
+const { adminRoute } = require('./routes/admin')
+const { courseRoute} = require('./routes/course')
+const { userRoute } = require('./routes/user')
 const db = require('./db');
 
 
 function main() {
-    mongoose.connect('mongodb+srv://atharvwork:1224@cluster0.xsevoja.mongodb.net/coursera');
+    mongoose.connect(process.env.MONGO_URL)
     app.listen(3000);
     console.log("Server Started");
 }
