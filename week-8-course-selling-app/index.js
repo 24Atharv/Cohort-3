@@ -5,7 +5,8 @@ app.use(express.json());
 const { userRoute } = require('./routes/user');
 const { courseRoute } = require('./routes/course');
 const { adminRoute } = require('./routes/admin');
-const { userModel, adminModel, courseModel, purchaseModel } = require('./db');
+const db = require('./db');
+
 
 function main() {
     mongoose.connect('mongodb+srv://atharvwork:1224@cluster0.xsevoja.mongodb.net/coursera');

@@ -34,3 +34,9 @@ const adminModel = mongoose.model('admin', Admin);
 const courseModel = mongoose.model('course', Course);
 const purchaseModel = mongoose.model('purchase', Purchase);
 
+module.exports = {
+    userModel,
+    adminModel,
+    courseModel,
+    purchaseModel
+}
