@@ -1,4 +1,4 @@
-const { use } = require('react');
+require('dotenv').config();
 const { JWT_USER_PASSWORD } = require('../config');
 const jwt = require('jsonwebtoken');
 

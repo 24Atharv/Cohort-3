@@ -1,7 +1,7 @@
 const express = require('express');
 const userRoute = express.Router();
 const { userModel } = require('../db'); 
-const JWT_USER_PASSWORD = require('../config');
+const { JWT_USER_PASSWORD } = require('../config');
 const jwt = require('jsonwebtoken');
 
 userRoute.post('/signup', async (req, res) => {

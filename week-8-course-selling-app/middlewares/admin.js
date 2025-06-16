@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { JWT_ADMIN_PASSWORD } = require('../config');
 const jwt = require('jsonwebtoken');
 
