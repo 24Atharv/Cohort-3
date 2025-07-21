@@ -6,13 +6,13 @@ const UserSchema = new Schema({
     password: {type: String, required: true, unique:  true},
 })
 
-const User = mongoose.model('Users', UserSchema);
+export const User = mongoose.model('Users', UserSchema);
 
 const TagsSchema = new Schema({
     title: {type: String, required: true, unique: true},
 })
 
-const Tag = mongoose.model('Tag', TagsSchema);
+export const Tag = mongoose.model('Tag', TagsSchema);
 
 
 const ContentSchema = new Schema({
@@ -23,13 +23,11 @@ const ContentSchema = new Schema({
     userId: {type: Types.ObjectId, ref: User},
 })
 
-const Content = mongoose.model('Content', ContentSchema);
+export const Content = mongoose.model('Content', ContentSchema);
 
 const LinkSchema = new Schema({
     hash: {type: String, required: true},
     userId: {type: mongoose.Schema.Types.ObjectId, ref: User, required: true},
 })
 
-const Link = mongoose.model('Link', LinkSchema);
-
-export = { User, Tag, Link, Content}
+export const Link = mongoose.model('Link', LinkSchema);
