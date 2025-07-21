@@ -9,5 +9,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/mongoose": "^5.11.96"
+  },
+  "dependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "zod": "^4.0.5"
+  }
 }
