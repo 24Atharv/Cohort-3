@@ -2,12 +2,21 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express = require('express');
 import mongoose from 'mongoose';
-import { User } from './schema';
+import { User, Content } from './schema';
 import { json } from 'zod';
 import jwt from 'jsonwebtoken';
+import { userMiddleware } from './usermiddleware';
 const JWT_PASSWORD = process.env.JWT_PASSWORD;
 const app = express();
 app.use(express.json());
+
+import { Request } from "express";
+
+interface AuthRequest extends Request {
+  userId?: string;
+}
+
+
 
 app.post('/api/v1/signup', async (req, res) => {
     const { username, password } = req.body;
@@ -52,6 +61,25 @@ app.post('/api/v1/signin', async (req, res) => {
             message: "Internal sever error"
         })
     }
+})
+
+app.post('/api/v1/content', userMiddleware , async (req, res) => {
+    const link = req.body.link;
+    const type = req.body.type;
+    const title = req.body.title;
+
+    await Content.create({
+        link,
+        title,
+        type,
+        // @ts-ignore
+        userId: req.userId,
+        tags: []
+    })
+
+    return res.status(200).json({
+        message: "Content created"
+    })
 })
 
 

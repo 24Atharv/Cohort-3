@@ -49,7 +49,7 @@ const ContentSchema = new mongoose_2.Schema({
     link: { type: String, required: true },
     type: { type: String, required: true },
     title: { type: String, required: true },
-    tags: { type: mongoose_1.Types.ObjectId, ref: exports.Tag, },
+    tags: [{ type: mongoose_1.Types.ObjectId, ref: exports.Tag, }],
     userId: { type: mongoose_1.Types.ObjectId, ref: exports.User },
 });
 exports.Content = mongoose_1.default.model('Content', ContentSchema);

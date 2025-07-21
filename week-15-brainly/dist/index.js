@@ -18,6 +18,7 @@ const express = require("express");
 const mongoose_1 = __importDefault(require("mongoose"));
 const schema_1 = require("./schema");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const usermiddleware_1 = require("./usermiddleware");
 const JWT_PASSWORD = process.env.JWT_PASSWORD;
 const app = express();
 app.use(express.json());
@@ -59,6 +60,22 @@ app.post('/api/v1/signin', (req, res) => __awaiter(void 0, void 0, void 0, funct
             message: "Internal sever error"
         });
     }
+}));
+app.post('/api/v1/content', usermiddleware_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const link = req.body.link;
+    const type = req.body.type;
+    const title = req.body.title;
+    yield schema_1.Content.create({
+        link,
+        title,
+        type,
+        // @ts-ignore
+        userId: req.userId,
+        tags: []
+    });
+    return res.status(200).json({
+        message: "Content created"
+    });
 }));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
