@@ -82,6 +82,19 @@ app.post('/api/v1/content', userMiddleware , async (req, res) => {
     })
 })
 
+app.post('/api/v1/delete', userMiddleware, async (req, res) => {
+    const contentId = req.body.contentId;
+    await Content.deleteMany({
+        contentId,
+        // @ts-ignore
+        userId: req.userId
+    })
+
+    res.json({
+        message: "deleted"
+    })
+})
+
 
 async function main() {
     // @ts-ignore
